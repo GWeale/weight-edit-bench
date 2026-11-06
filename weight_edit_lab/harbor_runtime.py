@@ -27,8 +27,8 @@ def read_submission(path):
     try:
         def nonfinite(value):
             raise ValueError("nonfinite JSON number")
-        return json.loads(path.read_text(), parse_constant=nonfinite)
-    except (ValueError, UnicodeError, OSError) as exc:
+        return json.loads(path.read_text(encoding="utf-8"), parse_constant=nonfinite)
+    except (ValueError, UnicodeError, OSError, RecursionError) as exc:
         raise InvalidSubmission("submission is not finite UTF-8 JSON") from exc
 
 

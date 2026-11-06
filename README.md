@@ -2,11 +2,13 @@
 
 **Can an agent improve a neural network by editing its weights while preserving what it already does well?**
 
-Weight Edit Bench provides RL environments, baselines and replay tools for testing
-that question. An editor proposes numerical changes to a separate student network.
-The benchmark measures task performance, retention, rejected edits and access costs.
+Weight Edit Bench is a [Harbor](https://harborframework.com/)-based benchmark for
+neural weight-editing agents, with a Python environment API for RL trainers.
+An editor proposes numerical changes to a separate student network. Harbor runs
+the agent, transfers its edit transcript to a fresh verifier, and records a reward
+from the student's task performance and retention.
 
-**Status: early research release, v0.1.0.** The direct-edit pipeline works; our first
+**Status: early research release, v0.2.0.** The direct-edit pipeline works; our first
 frozen-editor pilot showed no coding gain. This is not evidence of recursive
 self-improvement, mechanistic understanding or an RL advantage.
 
@@ -22,7 +24,30 @@ Direct coding programs cannot call an optimizer or autograd. The recipe baseline
 uses gradients and is reported separately. Neither track modifies a hosted
 provider's editor weights.
 
-## Quickstart: no GPU or API key
+## Quickstart: Harbor
+
+Requires Python 3.12+ and a working Docker daemon. The CPU tasks need no model
+download, GPU or API key. Harbor is pinned to 0.25.0.
+
+```sh
+git clone https://github.com/GWeale/weight-edit-bench.git
+cd weight-edit-bench
+python3.13 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e '.[harbor]'
+
+weight-edit-harbor --out runs/harbor-tasks --seeds 0
+harbor run --path runs/harbor-tasks --agent oracle --env docker --n-concurrent 1 --n-attempts 1 --max-retries 0 --jobs-dir runs/harbor-oracle
+harbor run --path runs/harbor-tasks --agent nop --env docker --n-concurrent 1 --n-attempts 1 --max-retries 0 --jobs-dir runs/harbor-nop
+```
+
+This exports two standard Harbor tasks: adaptation and adaptation with retention.
+The CPU `oracle` is a fixed Adam reference; `nop` submits no edits. These are
+installation controls, not learned editors. Use a fresh export directory for
+each task configuration. [Harbor setup, coding tasks, agent integration and
+scoring](docs/public/harbor.md) describe the full contract and verification scope.
+
+## Python API: no container required
 
 Requires Python 3.11+. The core has no third-party runtime dependencies.
 
@@ -111,6 +136,7 @@ inspect → edit → feedback turns and an explicit terminal evaluator. Any mode
 trainer that can produce the documented JSON actions can be connected. No Astra
 account, private agent runtime or provider SDK is required.
 
+[Harbor integration](docs/public/harbor.md) ·
 [Agent API and training boundaries](docs/public/agents.md) ·
 [Benchmark specification](docs/public/benchmark.md) ·
 [Baseline and result guide](docs/public/results.md)
@@ -137,7 +163,8 @@ python -m build
 ```
 
 Tests use local fixtures and do not download models. Optional tests skip when their
-extras are absent. CI exercises the core, Gymnasium and tiny coding fixtures.
+extras are absent. CI is configured for the core, Gymnasium, tiny coding fixtures
+and Harbor CPU oracle/no-edit trials. See the Harbor guide for observed validation.
 
 Source, task generators and examples are MIT licensed. Model weights are not
 included and keep their own licenses. See [third-party attribution](THIRD_PARTY.md),

@@ -45,6 +45,10 @@ class HarborTests(unittest.TestCase):
         for text in ("not-json", "{\"x\": NaN}", " "*262145):
             target.write_text(text)
             with self.assertRaises(InvalidSubmission): read_submission(target)
+        target.write_text("["*2000+"0"+"]"*2000)
+        nested = verify(self.task/"tests/spec.json", target, self.root/"nested-logs")
+        self.assertEqual(nested["status"], "invalid_submission")
+        self.assertEqual(nested["reward"], 0.)
         target.unlink()
         target.symlink_to(self.task/"environment/submission.json")
         with self.assertRaises(InvalidSubmission): read_submission(target)
@@ -83,6 +87,47 @@ class HarborTests(unittest.TestCase):
         self.assertIn("'a"+'a'*39+"'", (target/"environment/download_model.py").read_text())
         self.assertNotIn("/private/model", (target/"environment/spec.json").read_text())
         with self.assertRaises(ValueError): export_task(self.root/"bad",track="coding",model=dict(model,revision="main"))
+        with self.assertRaises(ValueError): export_task(self.root/"bad-split",track="coding",model=model,split="train")
+        with self.assertRaises(ValueError): export_task(self.root/"bad-mode",track="coding",model=model,mode="adapt")
+
+    def test_coding_replay_rewards_improvement_and_preserves_rejected_candidate(self):
+        from tests.test_public_api import DirectEnvTests
+        spec = dict(self.spec, track="coding", access={"max_turns": 16}, config={"case_weight": .25})
+        for code, expected in (("improve", .3125), ("regress", 0.)):
+            env = DirectEnvTests().make()
+            with patch("weight_edit_lab.harbor_runtime.make_env", return_value=env):
+                result = grade(spec, {"protocol": PROTOCOL, "actions": [
+                    {"kind": "edit", "code": code}, {"kind": "stop"}]})
+            self.assertEqual(result["reward"], expected)
+            self.assertEqual(result["episode"]["costs"]["optimizer_steps"], 0)
+            if code == "regress":
+                outcomes = result["episode"]["evaluation"]
+                self.assertNotEqual(outcomes["candidate"], outcomes["accepted"])
+                self.assertEqual(outcomes["baseline"], outcomes["accepted"])
+
+    def test_final_retention_loss_zeroes_reward_even_if_development_accepts(self):
+        from tests.test_public_api import DirectEnvTests
+        from tests.test_editing_benchmark import evaluation
+        env = DirectEnvTests().make()
+        student = env.env.student
+        original = student.evaluate
+
+        def evaluate(problems):
+            if student.state and problems[0].name.startswith("retention_test-"):
+                result = evaluation([0, 1, 1, 0], "retention")
+                for row, problem in zip(result["rows"], problems):
+                    row.update(name=problem.name, instruction=problem.instruction)
+                return result
+            return original(problems)
+
+        student.evaluate = evaluate
+        with patch("weight_edit_lab.harbor_runtime.make_env", return_value=env):
+            result = grade(dict(self.spec, track="coding", access={"max_turns": 16}, config={"case_weight": .25}),
+                {"protocol": PROTOCOL, "actions": [{"kind": "edit", "code": "improve"}]})
+        self.assertTrue(env.env.finalization["accepted"])
+        self.assertFalse(result["retention_ok"])
+        self.assertEqual(result["reward"], 0.)
+        self.assertTrue(result["final_changes"]["retention"]["lost_programs"])
 
     @unittest.skipUnless(importlib.util.find_spec("harbor"), "optional Harbor runtime")
     def test_installed_harbor_accepts_the_task(self):

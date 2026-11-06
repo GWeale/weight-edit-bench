@@ -1,5 +1,15 @@
 # Agent API
 
+## Harbor agents
+
+For terminal agents, export standard Harbor tasks with `weight-edit-harbor` and
+use Harbor's agent interface. The deliverable is a JSON edit transcript, replayed
+by a separate verifier. See the [Harbor guide](harbor.md) for commands, rewards,
+isolation and the distinction between transcript budgets and total exploration.
+
+The Python APIs below remain available for trainers that need stepwise feedback.
+Their training returns differ from the Harbor terminal reward.
+
 ## CPU numerical environment
 
 `WeightEditEnv.reset(seed=..., split=...)` returns `(observation, info)`.

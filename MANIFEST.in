@@ -2,6 +2,6 @@ include LICENSE CITATION.cff README.md CONTRIBUTING.md SECURITY.md THIRD_PARTY.m
 recursive-include docs/public *.md
 include docs/protocol.md
 recursive-include tests *.py
-recursive-include examples *.py *.json
+recursive-include examples *.py *.json *.sh
 recursive-include web *.html
 recursive-include benchmarks *.json

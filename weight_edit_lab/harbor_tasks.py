@@ -22,6 +22,8 @@ def export_task(destination, *, track="cpu", seed=0, mode="retain", split="test"
         raise ValueError("invalid seed, mode or split")
     if track not in ("cpu", "coding") or family_partition not in ("train", "evaluation"):
         raise ValueError("invalid track or family partition")
+    if track == "coding" and (split != "test" or mode != "retain"):
+        raise ValueError("coding tasks use retention and --family-partition; --split applies only to CPU tasks")
     if type(max_new_tokens) is not int or not 16 <= max_new_tokens <= 512:
         raise ValueError("max_new_tokens must be in 16..512")
     spec = {"protocol": PROTOCOL, "track": track, "seed": seed, "split": split,
@@ -132,8 +134,8 @@ actions and 16 total tool turns. Do not append actions after termination.
 
 The public observation includes support examples and permitted feedback. Final
 test scores are computed separately after your attempt. The submitted transcript
-must fit within 256 KiB and the declared episode budget. Only this transcript is
-transferred to the separate verifier. A missing, malformed or invalid submission
+must fit within 256 KiB and the declared episode budget. The separate verifier
+grades only this transcript. A missing, malformed or invalid submission
 earns zero. Infrastructure failures are recorded as errors.
 
 Exploration inside the agent sandbox is allowed within Harbor's time/resource
@@ -149,7 +151,7 @@ def main(argv=None):
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--track", choices=("cpu", "coding"), default="cpu")
     parser.add_argument("--seeds", default="0,1,2")
-    parser.add_argument("--split", choices=SPLITS, default="test")
+    parser.add_argument("--split", choices=SPLITS, default="test", help="CPU task namespace; coding uses --family-partition")
     parser.add_argument("--model", type=Path, help="Pinned model manifest for coding tasks")
     parser.add_argument("--max-new-tokens", type=int, default=512)
     parser.add_argument("--family-partition", choices=("train", "evaluation"), default="train")

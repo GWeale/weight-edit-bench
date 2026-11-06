@@ -5,6 +5,7 @@ __pycache__/
 build/
 dist/
 runs/
+jobs/
 .env
 .env.*
 !.env.example

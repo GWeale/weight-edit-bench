@@ -15,6 +15,12 @@ libraries skip when those libraries are absent. The full test suite uses tiny
 local fixtures and does not download model weights or contact a model API.
 Browser check scripts are optional manual checks; they are not run by unittest.
 
+For Harbor changes, use Python 3.12+, install `.[harbor]`, and run
+`bash examples/harbor-smoke.sh runs/harbor-smoke` with Docker available. This runs
+real CPU oracle/no-edit trials and checks their verifier artifacts. It downloads
+the base container image but no model weights. Unit tests alone do not establish
+that Harbor can build and run a task. Keep coding-image qualification separate.
+
 For a new agent, use the public observations and record its actions and budget.
 Do not inspect scoring inputs, terminal labels or another condition's results
 while choosing an edit. Report failures and rejected candidates. A failed run is

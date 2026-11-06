@@ -1,6 +1,6 @@
 # Benchmark contract
 
-Release: **0.1.0**. Status: **research preview**. Record both the release/commit
+Release: **0.2.0**. Status: **research preview**. Record both the release/commit
 and the environment protocol; scores from different protocols are not interchangeable.
 
 The question is whether an editor can improve a student's task performance under
@@ -38,6 +38,19 @@ ceiling scores and uniformly unsolvable tasks both hide editor differences.
 
 All generators are public. Reserved families are a protocol convention, not
 secret data or a contamination guarantee. No hosted leaderboard is supplied.
+
+## Harbor execution
+
+The Harbor task protocol is `weight-edit-harbor-v1`, using Harbor 0.25.0 task
+schema 1.4. The [Harbor guide](harbor.md) specifies terminal rewards, JSON
+submissions, container boundaries and execution commands. Its final reward is
+distinct from the Python environments' stepwise training returns.
+
+The agent can explore in its terminal, then submit a bounded transcript. A fresh
+verifier reconstructs the student and replays that transcript using trusted code.
+Transcript counters exclude discarded explorations. Report Harbor wall time,
+agent tokens and external training costs alongside those counters; equal
+submitted edit counts alone do not establish equal compute.
 
 ## Direct-program track
 
