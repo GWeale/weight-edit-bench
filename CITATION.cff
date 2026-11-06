@@ -6,6 +6,6 @@ authors:
   - family-names: Weale
     given-names: George
 repository-code: "https://github.com/GWeale/weight-edit-bench"
-version: 0.1.0
+version: 0.2.0
 license: MIT
 abstract: "Reinforcement-learning environments for numerical weight editing, with retention measurements, bounded agent access and reproducible evaluation."

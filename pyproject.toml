@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "weight-edit-bench"
-version = "0.1.0"
+version = "0.2.0"
 description = "RL environments and reproducible evaluations for neural-network weight-editing agents"
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -21,11 +21,13 @@ Issues = "https://github.com/GWeale/weight-edit-bench/issues"
 coding = ["torch>=2.6,<3", "transformers>=4.57.6,<5", "safetensors>=0.5,<1"]
 gym = ["gymnasium>=1.0,<2"]
 dev = ["build>=1.2,<2"]
+harbor = ["harbor==0.25.0; python_version >= '3.12'"]
 
 [project.scripts]
 weight-edit-lab = "weight_edit_lab.cli:main"
 weight-edit-bench = "weight_edit_lab.cli:main"
 weight-edit-coding = "weight_edit_lab.coding.cli:main"
+weight-edit-harbor = "weight_edit_lab.harbor_tasks:main"
 
 [tool.setuptools.packages.find]
 include = ["weight_edit_lab*"]
