@@ -1,0 +1,9 @@
+{
+  "author": "Astra, during the interactive implementation session",
+  "status": "Exploratory hypothesis, not validated causal localization",
+  "observation": "With bfloat16 inference, the initial four-task probe passed three functions but returned None instead of clipped boundary values on the clipping task.",
+  "prediction": "Support-only low-rank updates to late MLP output matrices may improve clipping on new parameter values while preserving simple coding skills.",
+  "action": {"kind": "lora", "layers": [22, 23], "module": "mlp.down_proj", "rank": 4, "steps": 8, "lr": 0.001, "data": "support"},
+  "controls": ["No edit", "Same rank, steps and rate at earlier MLP layers", "Attention output adaptation", "Small direct column scaling"],
+  "falsification": "No held-out coding improvement, a retention regression, or equal performance from the matched earlier location weakens the hypothesis. A successful edit alone does not identify a circuit."
+}

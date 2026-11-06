@@ -1,0 +1,212 @@
+{
+  "status": "historical development pilot; not a leaderboard result",
+  "protocol": "direct-weight-programming-v1",
+  "student": {
+    "model_id": "Qwen/Qwen2.5-Coder-0.5B-Instruct",
+    "revision": "ea3f2471cf1b1f0db85067f1ef93848e38e88c25"
+  },
+  "seed": 37,
+  "config": {
+    "horizon": 1,
+    "problems_per_split": 4,
+    "case_weight": 0.25,
+    "retention_weight": 1.0,
+    "step_cost": 0.0005,
+    "action_cost": 0.001,
+    "task_suite": "algorithmic",
+    "family_partition": "train",
+    "curriculum": "bridge",
+    "max_optimizer_steps": 8,
+    "max_edit_evaluations": 1
+  },
+  "authored_program": "W=weight('model.layers.12.mlp.down_proj')\na=activation('probe-2','model.layers.12.mlp.down_proj','input')\nb=activation('probe-3','model.layers.12.mlp.down_proj','input')\nc=activation('probe-4','model.layers.12.mlp.down_proj','input')\nv=a-c*sum(a*c)/sum(c*c)\nd=W@(b-a)\nwrite('model.layers.12.mlp.down_proj',W+outer(d,v)/sum(v*a))",
+  "inspection_requests": 1,
+  "probe_requests": 4,
+  "executed_probe_forwards": 3,
+  "probe_accounting_erratum": "The original interface counted one rejected probe request as a forward. This record uses corrected executed-forward accounting.",
+  "conditions": [
+    {
+      "condition": "no_edit",
+      "candidate": {
+        "coding": {
+          "accuracy": 0.5,
+          "case_accuracy": 0.6171875
+        },
+        "retention": {
+          "accuracy": 1.0,
+          "case_accuracy": 1.0
+        }
+      },
+      "accepted": {
+        "coding": {
+          "accuracy": 0.5,
+          "case_accuracy": 0.6171875
+        },
+        "retention": {
+          "accuracy": 1.0,
+          "case_accuracy": 1.0
+        }
+      },
+      "accepted_by_development_gate": true,
+      "budget_used": {
+        "optimizer_steps": 0,
+        "edit_evaluations": 0,
+        "initial_scoring_rounds": 1
+      }
+    },
+    {
+      "condition": "frozen_external_editor",
+      "candidate": {
+        "coding": {
+          "accuracy": 0.5,
+          "case_accuracy": 0.6171875
+        },
+        "retention": {
+          "accuracy": 1.0,
+          "case_accuracy": 1.0
+        }
+      },
+      "accepted": {
+        "coding": {
+          "accuracy": 0.5,
+          "case_accuracy": 0.6171875
+        },
+        "retention": {
+          "accuracy": 1.0,
+          "case_accuracy": 1.0
+        }
+      },
+      "accepted_by_development_gate": true,
+      "budget_used": {
+        "optimizer_steps": 0,
+        "edit_evaluations": 1,
+        "initial_scoring_rounds": 1
+      }
+    },
+    {
+      "condition": "random_sign",
+      "candidate": {
+        "coding": {
+          "accuracy": 0.5,
+          "case_accuracy": 0.6171875
+        },
+        "retention": {
+          "accuracy": 1.0,
+          "case_accuracy": 1.0
+        }
+      },
+      "accepted": {
+        "coding": {
+          "accuracy": 0.5,
+          "case_accuracy": 0.6171875
+        },
+        "retention": {
+          "accuracy": 1.0,
+          "case_accuracy": 1.0
+        }
+      },
+      "accepted_by_development_gate": true,
+      "budget_used": {
+        "optimizer_steps": 0,
+        "edit_evaluations": 1,
+        "initial_scoring_rounds": 1
+      }
+    },
+    {
+      "condition": "other_layer",
+      "candidate": {
+        "coding": {
+          "accuracy": 0.5,
+          "case_accuracy": 0.6171875
+        },
+        "retention": {
+          "accuracy": 1.0,
+          "case_accuracy": 1.0
+        }
+      },
+      "accepted": {
+        "coding": {
+          "accuracy": 0.5,
+          "case_accuracy": 0.6171875
+        },
+        "retention": {
+          "accuracy": 1.0,
+          "case_accuracy": 1.0
+        }
+      },
+      "accepted_by_development_gate": true,
+      "budget_used": {
+        "optimizer_steps": 0,
+        "edit_evaluations": 1,
+        "initial_scoring_rounds": 1
+      }
+    },
+    {
+      "condition": "fixed_lora",
+      "candidate": {
+        "coding": {
+          "accuracy": 0.25,
+          "case_accuracy": 0.52734375
+        },
+        "retention": {
+          "accuracy": 1.0,
+          "case_accuracy": 1.0
+        }
+      },
+      "accepted": {
+        "coding": {
+          "accuracy": 0.5,
+          "case_accuracy": 0.6171875
+        },
+        "retention": {
+          "accuracy": 1.0,
+          "case_accuracy": 1.0
+        }
+      },
+      "accepted_by_development_gate": false,
+      "budget_used": {
+        "optimizer_steps": 8,
+        "edit_evaluations": 1,
+        "initial_scoring_rounds": 1
+      }
+    }
+  ],
+  "same_runtime_verification": {
+    "replayed_successful_probes": 3,
+    "replayed_inspections": 1,
+    "program_reproduces_candidate_tensor_bits": true,
+    "verified_programs": {
+      "candidate_final": {
+        "coding": 4,
+        "retention": 4
+      },
+      "final": {
+        "coding": 4,
+        "retention": 4
+      }
+    },
+    "rollback_bit_exact": true,
+    "source_matches_episode": true,
+    "optimizer_steps_in_authored_patch": 0,
+    "rounding": {
+      "model.layers.12.mlp.down_proj": {
+        "requested_delta_l2": 0.5488273501396179,
+        "realized_delta_l2": 0.5512962937355042,
+        "relative_delta_rounding_error": 0.10716794431209564
+      }
+    },
+    "probe_output_shift_l2_after_dtype_rounding": {
+      "probe-2": {
+        "model.layers.12.mlp.down_proj": 0.8271961212158203
+      },
+      "probe-3": {
+        "model.layers.12.mlp.down_proj": 0.9975495934486389
+      },
+      "probe-4": {
+        "model.layers.12.mlp.down_proj": 0.008599559776484966
+      }
+    },
+    "scope": "Same-runtime numerical replay and checkpoint output verification. Probe shifts are local linear-layer effects on frozen pre-edit vectors, not evidence of a behavioral mechanism."
+  },
+  "scope": "One frozen editor, one authored patch, one sample per control. External editor identity and private exchanges are not reproducible from this release. No measured coding gain. No editor RL or causal interpretation established."
+}

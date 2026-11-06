@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the repository and exact commit used."
+title: "Weight Edit Bench"
+type: software
+authors:
+  - family-names: Weale
+    given-names: George
+repository-code: "https://github.com/GWeale/weight-edit-bench"
+version: 0.1.0
+license: MIT
+abstract: "Reinforcement-learning environments for numerical weight editing, with retention measurements, bounded agent access and reproducible evaluation."
