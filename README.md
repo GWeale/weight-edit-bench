@@ -26,7 +26,7 @@ provider's editor weights.
 
 ## Quickstart: Harbor
 
-Requires Python 3.12+ and a working Docker daemon. The CPU tasks need no model
+Requires Python 3.12+, Docker, Compose and Buildx. The CPU tasks need no model
 download, GPU or API key. Harbor is pinned to 0.25.0.
 
 ```sh

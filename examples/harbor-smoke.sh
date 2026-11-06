@@ -6,6 +6,9 @@ if [[ -e "$output" ]]; then
   echo "Choose a fresh output directory: $output" >&2
   exit 1
 fi
+docker info >/dev/null
+docker compose version >/dev/null
+docker buildx version >/dev/null
 python -m weight_edit_lab.harbor_tasks --out "$output/tasks" --seeds 0
 for agent in oracle nop; do
   harbor run --path "$output/tasks" --agent "$agent" --env docker \
@@ -20,6 +23,10 @@ from pathlib import Path
 
 root = Path(sys.argv[1])
 for agent in ('oracle', 'nop'):
+    for path in (root/agent).rglob('result.json'):
+        result = json.loads(path.read_text())
+        if result.get('exception_info'):
+            raise SystemExit(f'{agent}: infrastructure exception at {path}')
     rewards = sorted((root/agent).rglob('reward.json'))
     if len(rewards) != 2:
         raise SystemExit(f'{agent}: expected two completed verifier results, found {len(rewards)}')

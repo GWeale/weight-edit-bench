@@ -9,7 +9,10 @@ integration does not train the editor's weights.
 
 ## Run the CPU controls
 
-Use Python 3.12+ and Docker. Python 3.13 is used by the task image. Install from
+Use Python 3.12+, Docker, Compose and Buildx. Check `docker info`,
+`docker compose version` and `docker buildx version` before running trials.
+Harbor uses Buildx for its verifier infrastructure even when an agent image
+build succeeds without it. Python 3.13 is used by the task image. Install from
 the repository root:
 
 ```sh
@@ -21,6 +24,8 @@ bash examples/harbor-smoke.sh runs/harbor-smoke
 
 The script exports seed 0's adaptation and retention tasks, runs `oracle` and
 `nop` serially, and checks their actual verifier outputs. It calls no model API.
+It checks result exceptions and reward artifacts because a Harbor command can
+exit successfully while individual trials fail during infrastructure setup.
 The CPU oracle is Adam with learning rate 0.03 for up to 20 edits. It should earn
 positive reward on these two sanity tasks; `nop` should earn zero. Those outcomes
 establish a working harness, not an RL advantage.
