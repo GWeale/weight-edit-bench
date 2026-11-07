@@ -47,6 +47,10 @@ installation controls, not learned editors. Use a fresh export directory for
 each task configuration. [Harbor setup, coding tasks, agent integration and
 scoring](docs/public/harbor.md) describe the full contract and verification scope.
 
+The four CPU Docker trials passed with separate verifiers. Coding task export is
+experimental: the real-model Docker image has not completed an execution test.
+The direct coding Python API has its own tests; those do not qualify the container.
+
 ## Python API: no container required
 
 Requires Python 3.11+. The core has no third-party runtime dependencies.

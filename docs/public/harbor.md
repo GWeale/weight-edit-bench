@@ -133,6 +133,10 @@ from the stepwise Python environment return; do not pool them as one metric.
 
 ## Export direct coding tasks
 
+**Experimental: real-model container execution remains unverified.** Available
+workers lacked either sufficient disk headroom or Docker. Neither coding oracle
+nor coding no-edit trial was run; there is no measured coding Harbor reward.
+
 The coding image installs CPU PyTorch and Transformers, downloads a public model
 at an immutable revision during build, and runs offline afterward. It needs more
 disk, memory and time than the small CPU controls. Only Qwen-compatible module
@@ -184,11 +188,20 @@ tasks alone cannot establish mechanistic understanding or recursive improvement.
 
 ## Validation scope
 
-Local tests cover task schema acceptance by Harbor 0.25.0, replay, positive CPU
-reference reward, no-edit reward, action/file limits, trusted-spec separation
-and infrastructure-error handling. Real Docker acceptance results are recorded
-with the release. The coding image requires a separate end-to-end qualification;
-the small CPU controls do not establish coding-model compatibility or headroom.
+The shipped CPU smoke script passed all four trials on Linux x86_64 with Harbor
+0.25.0, Python 3.13.9, Docker 29.1.3, Compose 2.40.3 and Buildx 0.30.1. Both Adam
+references earned positive rewards and both no-edit controls earned zero. Each
+trial used a separate verifier, completed without an exception, and had observed
+two-CPU/1-GiB cgroup limits. Source and task exports remained unchanged. The
+[sanitized CPU record](../../benchmarks/reference/harbor-cpu-v0.2.0.json) gives the
+exact source commit and metrics. The base image's registry digest was not captured.
+
+Local tests cover task schema acceptance, replay, action/file limits, trusted-spec
+separation, coding retention gates and infrastructure-error handling. The coding
+image requires a separate end-to-end qualification; the small CPU controls do not
+establish coding-model compatibility or headroom. Reserve enough disk for model
+weights, installed dependencies, image layers and temporary build space before
+running the coding commands.
 
 Tasks are distributed from this repository through the exporter. No Harbor
 registry entry, hosted leaderboard or hosted rollout service is claimed.
